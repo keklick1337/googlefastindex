@@ -90,7 +90,17 @@ class GoogleIndexingApp:
         # URLs input frame
         urls_frame = ttk.LabelFrame(self.main_tab, text="URLs Input")
         urls_frame.pack(fill="both", expand=True, padx=10, pady=5)
-        
+
+        # Put paste and clear buttons in one line
+        buttons_frame = ttk.Frame(urls_frame)
+        buttons_frame.pack(side=tk.TOP, anchor="w", padx=5, pady=5)
+
+        paste_button = ttk.Button(buttons_frame, text="Paste text from clipboard", command=self.paste_from_clipboard)
+        paste_button.pack(side=tk.LEFT, padx=5, pady=5)
+
+        clear_button = ttk.Button(buttons_frame, text="Clear URLs", command=self.clear_urls)
+        clear_button.pack(side=tk.LEFT, padx=5, pady=5)
+
         self.urls_text = scrolledtext.ScrolledText(urls_frame, width=80, height=10)
         self.urls_text.pack(fill="both", expand=True, padx=5, pady=5)
         # Bind paste on macOS and Windows
@@ -137,6 +147,16 @@ class GoogleIndexingApp:
         
         self.status_display = scrolledtext.ScrolledText(log_frame, width=80, height=10)
         self.status_display.pack(fill="both", expand=True, padx=5, pady=5)
+
+    def clear_urls(self):
+        self.urls_text.delete('1.0', tk.END)
+
+    def paste_from_clipboard(self):
+        try:
+            clipboard_text = self.master.clipboard_get()
+            self.urls_text.insert(tk.END, clipboard_text)
+        except tk.TclError:
+            messagebox.showerror("Error", "No text in clipboard.")
 
     def setup_json_tab(self):
         # JSON files list
